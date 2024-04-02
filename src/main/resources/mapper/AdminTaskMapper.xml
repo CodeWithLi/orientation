@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.AdminTaskMapper">
+
+    <sql id="TaskColumns">
+        task_id,title,content,creator,create_time,dead_time,school,dependencies,score,
+            status,location,image_name
+     </sql>
+
+    <sql id="insertTaskColumns">
+        task_id,title,content,creator,create_time,dead_time,school,dependencies,score,
+            status,location
+    </sql>
+
+    <sql id="insertTaskReviewColumns">
+        review_id,task_id,account,review_image_name,status
+    </sql>
+
+    <sql id="insertStudentTaskColumns">
+        student_task_id,task_id,student_id,status,score
+    </sql>
+
+<!--    //查询所有任务-->
+    <select id="allTask" resultType="com.example.orientation.model.po.Admin.AdminTaskPo">
+        select <include refid="TaskColumns"></include> from task
+    </select>
+
+
+
+    <!--    //根据任务id查询任务是否存在-->
+    <select id="selectById" resultType="com.example.orientation.model.po.Admin.AdminTaskPo">
+        select <include refid="TaskColumns"></include> from task where task_id=#{taskId}
+    </select>
+
+<!--    //添加任务-->
+    <insert id="insertTask">
+        insert into task(<include refid="insertTaskColumns"></include>)
+        values (#{taskId},#{title},#{content},#{creator},#{createTime},
+                #{deadTime},#{school},#{dependencies},#{score},#{status},#{location})
+    </insert>
+
+<!--    //修改任务-->
+    <update id="updateTask">
+        update task
+        <set>
+            <if test="title !=null and title!='' ">title=#{title},</if>
+            <if test="content !=null and content!='' ">content=#{content},</if>
+            <if test="creator !=null and creator!='' ">creator=#{creator},</if>
+            <if test="createTime !=null and createTime!='' ">create_time=#{createTime},</if>
+            <if test="deadTime !=null and deadTime!='' ">dead_time=#{deadTime},</if>
+            <if test="school !=null and school!='' ">school=#{school},</if>
+            <if test="dependencies !=null">dependencies=#{dependencies},</if>
+            <if test="score !=null ">score=#{score},</if>
+            <if test="location !=null and location!='' ">location=#{location},</if>
+        </set>
+        where task_id=#{taskId}
+    </update>
+
+<!--    //根据id删除任务-->
+    <delete id="deleteTask">
+        delete
+        from task
+        where task_id = #{id}
+    </delete>
+
+<!--    //修改任务的发布状态-->
+    <update id="updateStatus">
+        update task set status=#{status} where task_id=#{taskId}
+    </update>
+
+<!--    //上传图片-->
+    <update id="uploadToImage">
+        update task set image_name=#{image} where task_id=#{taskId}
+    </update>
+
+<!--    //手动审核-->
+    <insert id="reviewImages">
+        insert into task_review(<include refid="insertTaskReviewColumns"></include>)
+        values (#{reviewId},#{taskId},#{account},#{reviewImage},#{status})
+    </insert>
+
+<!--    //查询所有需审核的任务-->
+    <select id="allManualReview" resultType="com.example.orientation.model.po.Admin.AdminTaskReviewPo">
+        select <include refid="insertTaskReviewColumns"></include> from task_review where status=0
+    </select>
+
+<!--    //修改审核状态为成功-->
+    <update id="updateReviewToSuccess">
+        update task_review set status=#{successStatus} where review_id=#{reviewId}
+    </update>
+
+<!--    //根据手机号查询学生id
+    String selectStudentByPhone(String account);-->
+    <select id="selectStudentByPhone" resultType="string">
+        select student_id from student where phone=#{account} and is_delete=0
+    </select>
+
+<!--    //根据学号查询学生id-->
+    <select id="selectStudentByStudentNumber" resultType="string">
+        select student_id from student where student_number=#{account} and is_delete=0
+    </select>
+
+<!--    //根据任务id查询任务分数-->
+    <select id="selectScoreById" resultType="double">
+        select score from task where task_id=#{taskId}
+    </select>
+
+<!--    为用户加积分-->
+    <insert id="addScoreByStudent">
+        insert into student_task(<include refid="insertStudentTaskColumns"></include>)
+        values (#{studentTaskId},#{taskId},#{studentId},#{status},#{score})
+    </insert>
+
+<!--    //任务失败，修改状态-->
+    <update id="updateReviewToFail">
+        update task_review set status=#{failStatus} where review_id=#{reviewId}
+    </update>
+</mapper>

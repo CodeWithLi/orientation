@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.AdminStudentMapper">
+    <sql id="studentColumns">student_id
+    ,identity_card,student_number,password,status,username,sex,phone,examinee_number,image,
+    school,college,major,student_class,instructor,parents_name,parents_phone,graduation_school,origin,address,is_delete,
+    born_date,introduction,expectation,nation,self_assessment,target,specialty</sql>
+
+    <sql id="insertStudentColumns">
+        student_id,identity_card,status,username,sex,phone,examinee_number,school,college,
+        major,instructor,parents_name,parents_phone,graduation_school,origin,is_delete,
+        born_date,nation
+    </sql>
+
+
+    <!--    //查询所有学生数据-->
+    <select id="selectAllStudent" resultType="com.example.orientation.model.po.Admin.AdminStudentPo">
+        select <include refid="studentColumns"></include> from student where is_delete != 1
+    </select>
+
+    <!--    //添加学生-->
+    <insert id="insertStudent">
+        insert into student (student_id
+            ,identity_card,status,username,sex,phone,examinee_number,
+                             school,college,major,instructor,parents_name,parents_phone,graduation_school,origin,is_delete,
+                             born_date,introduction,expectation,nation,self_assessment,target,specialty)
+        values
+        (#{studentId},#{identityCard},#{status},#{username},#{sex},#{phone},#{examineeNumber},#{school},
+        #{college},#{major},#{instructor},#{parentsName},#{parentsPhone},#{graduationSchool},#{origin},#{isDelete},
+        #{bornDate},#{introduction},#{expectation},#{nation},#{selfAssessment},#{target},#{specialty})
+    </insert>
+
+    <!--    //修改学生数据-->
+    <update id="updateStudent">
+        update student
+        <set>
+            <if test="identityCard !=null and identityCard!='' ">identity_card=#{identityCard},</if>
+            <if test="studentNumber !=null and studentNumber!='' ">student_umber=#{studentNumber},</if>
+            <if test="password !=null and password!='' ">password=#{password},</if>
+            <if test="username !=null and username!='' ">username=#{username},</if>
+            <if test="phone !=null and phone!='' ">phone=#{phone},</if>
+            <if test="examineeNumber !=null and examineeNumber!='' ">examinee_number=#{examineeNumber},</if>
+            <if test="dormitoryNumber !=null and dormitoryNumber!='' ">dormitory_number=#{dormitoryNumber},</if>
+            <if test="school !=null and school!='' ">school=#{school},</if>
+            <if test="college !=null and college!='' ">college=#{college},</if>
+            <if test="major !=null and major!='' ">major=#{major},</if>
+            <if test="studentClass !=null and studentClass!='' ">student_class=#{studentClass},</if>
+            <if test="instructor !=null and instructor!='' ">instructor=#{instructor},</if>
+            <if test="parentsName !=null and parentsName!='' ">parents_name=#{parentsName},</if>
+            <if test="parentsPhone !=null and parentsPhone!='' ">parents_phone=#{parentsPhone},</if>
+            <if test="graduationSchool !=null and graduationSchool!='' ">graduation_school=#{graduationSchool},</if>
+            <if test="origin !=null and origin!='' ">origin=#{origin},</if>
+            <if test="address !=null and address!='' ">address=#{address},</if>
+            <if test="sex !=null and sex!='' ">sex=#{sex},</if>
+            <if test="introduction !=null and introduction!='' ">introduction=#{introduction},</if>
+            <if test="expectation !=null and expectation!='' ">expectation=#{expectation},</if>
+            <if test="nation !=null and nation!='' ">nation=#{nation},</if>
+            <if test="selfAssessment !=null and selfAssessment!='' ">self_assessment=#{selfAssessment},</if>
+            <if test="target !=null and target!='' ">sex=#{sex},</if>
+            <if test="status !=null ">status=#{status},</if>
+            <if test="bornDate !=null ">born_date=#{bornDate},</if>
+        </set>
+        where student_id=#{studentId}
+    </update>
+
+    <!--    //批量删除学生数据-->
+    <update id="deleteByIds">
+        update student set is_delete=1 where student_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--    //导入数据-->
+    <insert id="insertByExcel" parameterType="java.util.List">
+        insert into student (<include refid="insertStudentColumns"></include> )
+        values
+        <foreach collection="excelDto" item="dto" separator=",">
+            (#{dto.studentId},#{dto.identityCard},#{dto.status},#{dto.username},#{dto.sex},#{dto.phone},#{dto.examineeNumber},
+            #{dto.school},#{dto.college},#{dto.major},#{dto.instructor},#{dto.parentsName},#{dto.parentsPhone},#{dto.graduationSchool},#{dto.origin},
+            #{dto.isDelete},#{dto.bornDate},#{dto.nation})
+        </foreach>
+    </insert>
+
+    <!--    //分页查询学生数据-->
+    <select id="selectByPage" resultType="com.example.orientation.model.vo.Admin.AdminStudentVo">
+        select <include refid="studentColumns"></include> from student where is_delete != 1
+    </select>
+
+    <!--    //查询男女比例-->
+    <select id="proportionBySex" resultType="map">
+        select
+        (select CONVERT(count(*) , SIGNED) from student where sex = '男' and status =1 and is_delete != 1) as '已注册男生',
+        (select CONVERT(count(*) , SIGNED) from student where sex = '女' and status =1 and is_delete != 1) as '已注册女生'
+    </select>
+
+    <!--    //查询注册人数-->
+    <select id="registerCount" resultType="map">
+        select
+               (select count(*) from student where status=1 and is_delete != 1) as '已注册',
+               (select count(*) from student where status=0 and is_delete != 1) as '未注册'
+    </select>
+
+    <!--    //各专业人数统计-->
+    <select id="majorCount" resultType="map">
+        select college, major, count(*) as count
+        from student where student.major is not null and is_delete != 1
+        group by college, major;
+    </select>
+
+
+
+    <!--    //各学院人数统计-->
+    <select id="collegeCount" resultType="map">
+        select student.college, count(*) as count from student
+        where student.college is not null and is_delete != 1
+        group by student.college;
+    </select>
+
+    <!--    //各地址人数统计-->
+    <select id="addressCount" resultType="map">
+        select student.address, count(*) as count from student
+        where student.address is not null and is_delete != 1
+        group by student.address;
+    </select>
+
+<!--    //根据身份证查询是否有该用户-->
+    <select id="selectStudentByIdentityCard" resultType="com.example.orientation.model.po.Admin.AdminStudentPo">
+        select <include refid="studentColumns"></include> from student where identity_card=#{identityCard} and is_delete != 1
+    </select>
+
+<!--    //统计用户的总积分-->
+    <select id="countPoint" resultType="com.example.orientation.model.po.CountPointPo">
+        select s.student_id,sum(ts.score) as points from student s
+        join student_task ts on s.student_id = ts.student_id
+        group by  s.student_id;
+    </select>
+
+<!--    //更改每个用户的总积分-->
+<!--    <update id="updatePoints" parameterType="com.example.orientation.model.po.CountPointPo">-->
+<!--        <foreach item="item" index="index" collection="list" separator=";">-->
+<!--            UPDATE student-->
+<!--            SET points = #{item.points} , ranking=#{item.ranking}-->
+<!--            WHERE student_id = #{item.studentId}-->
+<!--        </foreach>-->
+<!--    </update>-->
+    <update id="updatePoints">
+            UPDATE student
+            SET points = #{points} , ranking=#{ranking}
+            WHERE student_id = #{studentId}
+    </update>
+    <!-- 指定更新特定用户的条件 -->
+    <!-- 设置points列的新值 -->
+    <!-- 遍历CountPointPo对象的列表 -->
+
+</mapper>

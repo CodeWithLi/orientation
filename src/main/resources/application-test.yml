@@ -1,0 +1,90 @@
+#项目的访问接口
+server:
+  port: 3080
+
+#数据源的配置
+spring:
+  datasource:
+    driver: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://114.132.67.226:3306/orientation?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: xiaoli
+    password: abC123456@
+    hikari:
+      max-lifetime: 120000
+
+  #redis的配置
+  data:
+    redis:
+      host: 114.132.67.226
+      port: 6379
+      password: abC123456@
+
+
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  cache:
+    type: redis
+    redis:
+      key-prefix: orientation
+      time-to-live: 600s
+
+
+#  #redis的配置
+#  data:
+#    redis:
+#      host: 192.168.43.245
+#      port: 6379
+
+
+#mybatis配置
+mybatis:
+  #指定sql映射文件的位置
+  mapper-locations: classpath:mapper/*.xml
+  #指定给实体类起别名
+  type-aliases-package: com.example.todolist.pojo.po
+  configuration:
+    #开启驼峰命名规则
+    map-underscore-to-camel-case: true
+    #开启日志功能
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+minio:
+  #  endpoint: http://192.168.1.4:9000
+  endpoint: http://114.132.67.226:9000
+  bucketName: orientation
+  accessKey: minio
+  secretKey: minio123
+
+
+
+zw:
+  #jwt令牌的配置
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    or-secret-key: EiRF7SH9Su3TRcygA+yEigXYMWDP+o8xcQj0GJDtjUM=
+    # 设置jwt过期时间 30天  30*24*60*60*1000
+    or-ttl: 2592000000
+    # 设置前端传递过来的令牌名称
+    or-token-name: Authorization
+
+  tencent:
+    # id
+    secret-id: AKIDY0JQnAMUWTJ6iQ6gL3sdEi7dt31r00ra
+    # 密钥
+    secret-key: d099xWq01nLejJm5ERektvnS6rDTZWLx
+
+  uni:
+    #短信公钥
+    access-key-id: jpF2hWrirbB7FhktfSMyN1DuhvxLBvwZaFGN33R7aHbwG2ae9
+    #短信模板 ID
+    template_id: pub_verif_ttl3
+    #短信签名
+    signature: 李梓文
+    #有效时间 1000*60*3
+    ttl: 3
+
+

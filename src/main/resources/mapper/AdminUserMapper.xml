@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.AdminUserMapper">
+
+    <!--    查询用户-->
+    <select id="exitUser" resultType="com.example.orientation.model.po.Admin.AdminUserPo">
+        select teacher_number, password, status, image
+        from admin_user
+        where teacher_number=#{teacherNumber}
+    </select>
+
+    <!--    根据id查询用户-->
+    <select id="selectUserById" resultType="com.example.orientation.model.po.Admin.AdminUserPo">
+        select teacher_number, password, status, image
+        from admin_user
+        where user_id = #{userId}
+    </select>
+
+    <!-- //添加管理员-->
+    <insert id="insertAdmin">
+        insert into admin_user(user_id,teacher_number, password, username,school,phone,sex,status)
+        values (#{userId},#{teacherNumber}, #{password}, #{username},#{school},#{phone},#{sex}, #{status})
+    </insert>
+
+    <!--    //上传头像-->
+    <update id="updateToImage">
+        update admin_user
+        set image=#{uploadImage}
+        where user_id=#{userId}
+    </update>
+
+    <!--    //展示所有管理员-->
+    <select id="selectAllAdmin" resultType="com.example.orientation.model.po.Admin.AdminUserPo">
+        select user_id,teacher_number,password,username,school,phone,sex,status,image
+        from admin_user
+        where status!=0
+    </select>
+
+<!--    //删除管理员-->
+    <update id="deleteAdmin">
+        update admin_user set status=0 where teacher_number=#{teacherNumber}
+    </update>
+
+<!--    //更改管理员信息-->
+    <update id="updateAdmin">
+        update admin_user
+        <set>
+            <if test="password!=null and password!=''"> password=#{password},</if>
+            <if test="username!=null and username!=''"> username=#{username},</if>
+            <if test="phone!=null and phone!=''"> phone=#{phone},</if>
+            <if test="school!=null and school!=''"> school=#{school},</if>
+            <if test="sex!=null and sex!=''"> sex=#{sex},</if>
+            <if test="status!=null and status!=''"> status=#{status},</if>
+            <if test="teacherNumber!=null and teacherNumber!=''"> teacher_number=#{teacherNumber}</if>
+        </set>
+        where user_id=#{userId}
+    </update>
+
+<!--    //上传头像时没该管理员的话创建新管理员-->
+    <insert id="insertNewAdmin">
+        insert into admin_user(user_id,image,status) values (#{userId},#{uploadNewImage},#{status})
+    </insert>
+</mapper>
