@@ -53,11 +53,11 @@ zw:
   #jwt令牌的配置
   jwt:
     # 设置jwt签名加密时使用的秘钥
-    or-secret-key: EiRF7SH9Su3TRcygA+yEigXYMWDP+o8xcQj0GJDtjUM=
+    or-secret-key:
     # 设置jwt过期时间 30天  30*24*60*60*1000
-    or-ttl: 2592000000
+    or-ttl:
     # 设置前端传递过来的令牌名称
-    or-token-name: Authorization
+    or-token-name:
 
   tencent:
     # id
