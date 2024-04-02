@@ -6,20 +6,18 @@ server:
 spring:
   datasource:
     driver: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://114.132.67.226:3306/orientation?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: xiaoli
-    password: abC123456@
+    url:
+    username:
+    password:
     hikari:
       max-lifetime: 120000
 
   #redis的配置
   data:
     redis:
-      host: 114.132.67.226
-      port: 6379
-      password: abC123456@
-
-
+      host:
+      port:
+      password:
 
   servlet:
     multipart:
@@ -31,14 +29,6 @@ spring:
     redis:
       key-prefix: orientation
       time-to-live: 600s
-
-
-#  #redis的配置
-#  data:
-#    redis:
-#      host: 192.168.43.245
-#      port: 6379
-
 
 #mybatis配置
 mybatis:
@@ -54,12 +44,10 @@ mybatis:
 
 minio:
   #  endpoint: http://192.168.1.4:9000
-  endpoint: http://114.132.67.226:9000
-  bucketName: orientation
-  accessKey: minio
-  secretKey: minio123
-
-
+  endpoint:
+  bucketName:
+  accessKey:
+  secretKey:
 
 zw:
   #jwt令牌的配置
@@ -73,18 +61,18 @@ zw:
 
   tencent:
     # id
-    secret-id: AKIDY0JQnAMUWTJ6iQ6gL3sdEi7dt31r00ra
+    secret-id:
     # 密钥
-    secret-key: d099xWq01nLejJm5ERektvnS6rDTZWLx
+    secret-key:
 
   uni:
     #短信公钥
-    access-key-id: jpF2hWrirbB7FhktfSMyN1DuhvxLBvwZaFGN33R7aHbwG2ae9
+    access-key-id:
     #短信模板 ID
-    template_id: pub_verif_ttl3
+    template_id:
     #短信签名
-    signature: 李梓文
+    signature:
     #有效时间 1000*60*3
-    ttl: 3
+    ttl:
 
 
