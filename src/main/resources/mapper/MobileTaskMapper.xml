@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.MobileTaskMapper">
+
+    <sql id="insertTaskReviewColumns">
+        review_id,task_id,account,review_image_name,status
+    </sql>
+
+    <sql id="insertStudentTaskColumns">
+        student_task_id,task_id,student_id,status,score
+    </sql>
+
+    <sql id="TaskColumns">
+        task_id,title,content,creator,create_time,dead_time,school,dependencies,score,
+            status,location,image_name
+    </sql>
+    <!--String selectStudentByAccount(String phone,String studentNumber);-->
+
+    <select id="selectStudentByAccount" resultType="string">
+        select person_id from student
+        <where>
+            <if test="phone!=null and phone != ''">phone=#{phone}</if>
+            <if test="studentNumber!=null and studentNumber != ''">student_number=#{studentNumber}</if>
+        </where>
+    </select>
+
+    <!--    //根据手机号查询personId-->
+    <select id="selectStudentByPhone" resultType="com.example.orientation.model.dto.Mobile.MobileReviewDto">
+        select student_id, person_id from student where phone =#{account}
+    </select>
+
+    <!--    //根据学号查询personId-->
+    <select id="selectStudentByStudentNumber" resultType="com.example.orientation.model.dto.Mobile.MobileReviewDto">
+        select student_id, person_id from student where student_number =#{account}
+    </select>
+
+    <!--    //根据任务id查询任务是否存在-->
+    <select id="selectTaskById" resultType="com.example.orientation.model.po.Mobile.MobileTaskPo">
+        select <include refid="TaskColumns"></include> from task where task_id=#{taskId} and status=1
+    </select>
+
+    <!--     //手动审核任务是否完成-->
+    <insert id="reviewImages">
+        insert into task_review(<include refid="insertTaskReviewColumns"></include>)
+        values (#{reviewId},#{taskId},#{account},#{reviewImageName},#{status})
+    </insert>
+
+    <!--    //为学生添加积分-->
+    <insert id="addScoreByStudent">
+        insert into student_task(<include refid="insertStudentTaskColumns"></include>)
+        values (#{studentTaskId},#{taskId},#{studentId},#{status},#{score})
+    </insert>
+
+</mapper>

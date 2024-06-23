@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver: com.mysql.cj.jdbc.Driver
-    url:
+    url: jdbc:mysql://114.132.67.226:3306/orientation?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
     username:
     password:
     hikari:
@@ -19,6 +19,8 @@ spring:
       port:
       password:
 
+
+
   servlet:
     multipart:
       max-file-size: 50MB
@@ -29,6 +31,14 @@ spring:
     redis:
       key-prefix: orientation
       time-to-live: 600s
+
+
+#  #redis的配置
+#  data:
+#    redis:
+#      host: 192.168.43.245
+#      port: 6379
+
 
 #mybatis配置
 mybatis:
@@ -49,15 +59,17 @@ minio:
   accessKey:
   secretKey:
 
+
+
 zw:
   #jwt令牌的配置
   jwt:
     # 设置jwt签名加密时使用的秘钥
     or-secret-key:
     # 设置jwt过期时间 30天  30*24*60*60*1000
-    or-ttl:
+    or-ttl: 2592000000
     # 设置前端传递过来的令牌名称
-    or-token-name:
+    or-token-name: Authorization
 
   tencent:
     # id
@@ -74,3 +86,5 @@ zw:
     signature:
     #有效时间 1000*60*3
     ttl:
+
+

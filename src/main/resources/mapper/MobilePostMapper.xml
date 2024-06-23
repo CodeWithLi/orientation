@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.MobilePostMapper">
+
+    <sql id="insertPostColumns">
+        post_id,followingId,content,createTime,updateTime
+    </sql>
+
+    <sql id="PostColumns">
+        post_id,followingId,content,media,likes,comments,updateTime
+    </sql>
+
+    <!--    //查询发布者是否存在-->
+    <select id="exitFollowing" resultType="int">
+        select count(*) from studnet where studnet_id=#{followingId}
+    </select>
+
+    <!--    //添加帖子-->
+    <insert id="addPost">
+        insert into post(<include refid="insertPostColumns"></include>) values
+        (#{postId},#{followingId},#{content},#{createTime},#{updateTime})
+    </insert>
+
+    <!--    //查询帖子是否存在-->
+    <select id="exitPost" resultType="int">
+        select count(*) from post where post_id=#{postId}
+    </select>
+
+    <!--    //上传媒体-->
+    <update id="uploadMedia">
+        update post
+        <set>
+            <if test="media!=null and media != ''">media=#{media}</if>
+        </set>
+        where post_id=#{postId}
+    </update>
+
+    <!--    //删除帖子-->
+    <delete id="deletePost">
+        delete from post where post_id=#{postId}
+    </delete>
+
+    <!--    //查询出博主对应所有的帖子-->
+    <select id="allPostByFollowing" resultType="com.example.orientation.model.po.Mobile.MobilePostPo">
+        select <include refid="PostColumns"></include> from post
+        where following_id=#{followingId}
+    </select>
+
+    <!--    //根据博主id和帖子id查询出对应的帖子-->
+    <select id="getPostInfo" resultType="com.example.orientation.model.po.Mobile.MobilePostPo">
+        select <include refid="PostColumns"></include> from post
+        where following_id=#{followingId} and post_id=#{postId}
+    </select>
+
+</mapper>

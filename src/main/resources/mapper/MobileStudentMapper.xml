@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orientation.mapper.MobileStudentMapper">
+
+    <!--    //根据手机号码查询学生信息-->
+    <select id="loginByPhone" resultType="com.example.orientation.model.po.MobileUser.MobileLoginPo">
+        select student_id,username,student_number,phone,password,status from student
+        where phone=#{phone} and is_delete=0
+    </select>
+
+    <!--    //根据学号查询学生信息-->
+    <select id="loginByStudentNumber" resultType="com.example.orientation.model.po.MobileUser.MobileLoginPo">
+        select student_id,username,student_number,phone,password,status from student
+        where student_number=#{studentNumber} and is_delete=0
+    </select>
+
+    <!--    //根据身份证查询学生信息-->
+    <select id="registerByIdentityCard" resultType="com.example.orientation.model.po.MobileUser.MobileRegisterPo">
+        select identity_card,examinee_number,phone,status,image,username,sex from student
+        where identity_card=#{identityCard} and is_delete=0
+    </select>
+
+    <!--    //用户注册成功-->
+    <update id="SuccessByStudentRegister">
+        update student
+        <set>
+            <if test="password !=null and password!='' ">password=#{password},</if>
+            <if test="status !=null ">status=#{status}</if>
+        </set>
+        where identity_card=#{identityCard}
+    </update>
+
+    <!--    //修改密码-->
+    <update id="updatePass">
+        update student
+        <set>
+            <if test="password !=null and password!='' ">password=#{password}</if>
+        </set>
+        where identity_card=#{identityCard}
+    </update>
+
+    <!--    //上传头像-->
+    <update id="registerUploadImage">
+        update student
+        <set>
+            <if test="uploadImage !=null and uploadImage!='' ">image=#{uploadImage},</if>
+            <if test="status !=null">status=#{status}</if>
+        </set>
+        where identity_card=#{identityCard}
+    </update>
+
+    <!--    //存储personId-->
+    <update id="updatePersonId">
+        update student
+        <set>
+            <if test="personId !=null and personId!='' ">person_id=#{personId},</if>
+        </set>
+        where identity_card=#{identityCard}
+    </update>
+
+</mapper>
